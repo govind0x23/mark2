@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block subdoamins %}
+
+<div class="container my-5 d-flex justify-content-center">
+
+    <form class="form-inline" id="scan-form" action="subdomains" method="post">
+        {% csrf_token %}
+     
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">URL</div>
+            </div>
+            <input type="text" class="form-control" id="inlineFormInputGroupUsername2" name="host"
+                placeholder="example.com" style="width: 20rem;">
+        </div>
+      
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">THREADS</div>
+            </div>
+            <input type="number" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Threads"
+                name="threads" value="50" style="width: 8rem;">
+        </div>
+    
+          <select class="form-select position-relative" name="wordlist" aria-label="Default select example" style="width:8rem;bottom:4px;margin: 0 7px 0px 0px;padding: 6px 20px" >
+              <option selected>Wordlist</option>
+              <option value="subdomains-500.txt">subdomains-500.txt </option>
+              <option value="subdomains-1000.txt">subdomains-1k.txt </option>
+              <option value="subdomains-5000.txt">subdomains-5k.txt </option>
+              <option value="subdomains-10000.txt">subdomains-10k.txt </option>
+              
+      
+              
+            </select>
+            <button type="submit" class="btn btn-primary mb-2" id="findBtn" >Find</button>
+         
+  
+    </form>
+</div>
+<div class="container my-3" id="loadingDiv" style="display: none;">
+    {% include "loading.html" %}
+</div>
+
+<div class="container my-5">
+   
+   
+    {% if results %}
+    <div id="scanResult">
+        <!-- Add a download button -->
+        <button class="btn btn-primary mb-2" id="downloadBtn" style="position: relative;left: 57rem;top: 2.8rem;" onclick="downloadResults()">Download Results</button>
+       
+        <h2>Scan Results:</h2>
+        
+        <div class="table-responsive">
+            <table class="table" id="resultTable">
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Response Code</th>
+                        <th>IP Address</th>
+                        <th>Open Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.url }}</td>
+                        <td class="text-success">200 OK</td>
+                        <td>{{result.ip}}</td>
+                        <td><a href="{{ result.url }}" target="_blank" class="btn btn-primary">Open</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+    
+</div>
+<script src="/static/script.js"></script>
+
+{% endblock subdoamins %}

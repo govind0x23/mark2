@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block find %}
+<div class="container my-5 d-flex justify-content-center">
+    <form class="form-inline" id="scan-form" action="beta2" method="post">
+        {% csrf_token %}
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">URL</div>
+            </div>
+            <input type="text" class="form-control" id="hostInput" name="host"
+                placeholder="https://www.example.com" style="width: 20rem;">
+        </div>
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">THREADS</div>
+            </div>
+            <input type="number" class="form-control" id="threadsInput" placeholder="Enter Threads"
+                name="threads" value="50" style="width: 8rem;">
+        </div>
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">EXT</div>
+            </div>
+            <input type="text" class="form-control" id="extInput" name="ext"
+                placeholder="Extention (Optional)" style="width: 11rem;">
+        </div>
+        <select class="form-select position-relative" name="wordlist" aria-label="Default select example"
+            style="width:8rem;bottom:4px;margin: 0 7px 0px 0px;padding: 6px 20px">
+            <option selected>Wordlist</option>
+            <option value="common.txt">common.txt</option>
+            <option value="test20.txt">test20.txt</option>
+            <option value="list.txt">list.txt</option>
+            <option value="medium.txt">medium.txt</option>
+        </select>
+        <button type="submit" class="btn btn-primary mb-2" id="findBtn">Find</button>
+    </form>
+</div>
+
+<div class="container my-5">
+    <div id="scanResult">
+        <button class="btn btn-primary mb-2" id="downloadBtn0" style="position: relative;left: 57rem;top: 2.8rem;"  >Download Results</button>
+        <h2>Scan Results</h2>
+        <!-- Add a download button -->
+        
+        <div class="table-responsive">
+            <table class="table" id="resultTable">
+                <!-- Table headers -->
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Response Code</th>
+                        <th>Page Size</th>
+                        <th>Open Link</th>
+                    </tr>
+                </thead>
+                <tbody id="resultBody">
+                    <!-- Table body will be dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('scan-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Check if data.result is defined
+            if (data.result) {
+                // Append new results
+                data.result.forEach(item => {
+                    const newRow = `
+                        <tr>
+                            <td>${item.url}</td>
+                            <td class="text-success">200 OK</td>
+                            <td>${item.size}</td>
+                            <td><a href="${item.url}" target="_blank" class="btn btn-primary">Open</a></td>
+                        </tr>
+                    `;
+                    document.getElementById('resultBody').innerHTML += newRow;
+                });
+            } else {
+                console.error('No results found');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    
+</script>
+{% endblock find %}

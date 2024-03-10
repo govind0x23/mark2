@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block find %}
+
+<script src="/static/script.js"></script>
+<div class="container my-5 d-flex justify-content-center">
+    <form class="form-inline" id="scan-form" action="directories" method="post">
+        {% csrf_token %}
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">URL</div>
+            </div>
+            <input type="text" class="form-control" id="inlineFormInputGroupUsername2" name="host"
+                placeholder="https://www.example.com" style="width: 20rem;">
+        </div>
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">THREADS</div>
+            </div>
+            <input type="number" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Threads"
+                name="threads" value="50" style="width: 8rem;">
+        </div>
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">EXT</div>
+            </div>
+            <input type="text" class="form-control" id="inlineFormInputGroupUsername2" name="ext"
+                placeholder="Extention (Optional)" style="width: 11rem;">
+        </div>
+        <select class="form-select position-relative" name="wordlist" aria-label="Default select example"
+            style="width:8rem;bottom:4px;margin: 0 7px 0px 0px;padding: 6px 20px">
+            <option selected>Wordlist</option>
+            <option value="small1k.txt">small1k.txt</option>
+            <option value="common4-5k.txt">common4-5k.txt</option>
+            <option value="medium20k.txt">medium20k.txt</option>
+            <option value="big23k.txt">big23k.txt</option>
+            <option value="testing.txt">testing.txt</option>
+        </select>
+        <button type="submit" class="btn btn-primary mb-2" id="findBtn">Find</button>
+    </form>
+</div>
+
+<div class="container my-3" id="loadingDiv" style="display: none;">
+    {% include "loading.html" %}
+</div>
+
+<div class="container my-5">
+    {% if result %}
+    <div id="scanResult">
+        <button class="btn btn-primary mb-2" id="downloadBtn0" style="position: relative;left: 57rem;top: 2.8rem;"  >Download Results</button>
+        <h2>Scan Results</h2>
+        <!-- Add a download button -->
+        
+        <div class="table-responsive">
+            <table class="table" id="resultTable">
+                <!-- Table headers -->
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Response Code</th>
+                        <th>Page Size</th>
+                        <th>Open Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in result %}
+                    <tr>
+                        <!-- Table data -->
+                        <td>{{ item.url }}</td>
+                        <td class="text-success">200 OK</td>
+                        <td>{{ item.size }}</td>
+                        <td><a href="{{ item.url}}" target="_blank" class="btn btn-primary">Open</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<script src="/static/script.js"></script>
+
+
+
+{% endblock find %}

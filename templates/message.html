@@ -1,0 +1,47 @@
+<style>
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    .alert {
+        animation: none;
+    }
+
+    .animate-out {
+        animation: fadeOut 1s ease-in-out forwards;
+    }
+</style>
+
+
+<div class="container">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} mx-1 my-1 alert-dismissible fade show" role="alert"
+        style="padding: 17px">
+        <strong>Message: </strong>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<script>
+
+    var alerts = document.querySelectorAll('.alert');
+    for (var i = 0; i < alerts.length; i++) {
+        (function (index) {
+            setTimeout(function () {
+                alerts[index].classList.add('animate-out');
+                setTimeout(function () {
+                    alerts[index].remove();
+                }, 1000);
+            }, (index + 1) * 5000);
+        })(i);
+    }
+</script>
